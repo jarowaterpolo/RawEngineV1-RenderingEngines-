@@ -68,11 +68,14 @@ void VerticalSmallLines(){
 void CheckerBoardYellow(){
    float gridSize = 4;
    vec2 grid = floor(fUV * gridSize);
-   float diagonal = 1.5 - (grid.x * .2 + grid.y * .4) * .8;
+//   float diagonal = 1.5 - (grid.x * .2 + grid.y * .4) * .8;
+   float diagonal =
+//   (grid.x + grid.y);
+   floor(fUV.x * gridSize) + floor(fUV.y * gridSize);
 
-
-   if (mod(grid.x + grid.y, 2.0) == 0.0){
-      FragColor = clamp(mix(gridA2ColYel, gridA2ColBrn, sin(time) * diagonal), gridA2ColYel, black);
+   if (mod(diagonal, 2.0) == 0.0){
+//      FragColor = clamp(mix(gridA2ColYel, gridA2ColBrn, sin(time) * diagonal), gridA2ColYel, black);
+      FragColor = clamp(mix(black, gridA2ColYel, (sin(time - diagonal * .4) / 2 + .5)), black, gridA2ColYel);
    }
    else{
       FragColor = black;
@@ -93,7 +96,7 @@ void DonutGreyWithWhite(){
    {
 //      FragColor = mix(white, black, (dist * 4) + .1) * grey + (1-grey);
 //         FragColor = white - grey - dist;
-         FragColor = grey + grey / 2.5 - dist;
+         FragColor = grey + grey / ((sin(time) / 2 + .5) * 2.5) - dist;
 //      FragColor = clamp( white
 //                         - dist * grey * 4
 //      , grey, white);
@@ -109,8 +112,9 @@ void DiagonalSmallLines(){
    float difference = fUV.x * lineAmount - fUV.y * lineAmount;
    float colDifference = (fUV.x - fUV.y);
 //   vec4 RedToGreen = vec4(floor(fUV.y), ceil(fUV.y), 0, 1);
-   vec4 RedToGreen = vec4(fUV.y / 3, fUV.x, 0, 1);
-   vec4 BlueToPink = vec4((fUV.x - fUV.y), 0, 1, 1);
+   vec4 RedToGreen = vec4(fUV.y / 3 * (sin(time) / 2 + .5), fUV.x, 0, 1);
+   vec4 BlueToPink = vec4(colDifference * (sin(time) / 2 + .5), 0, 1, 1);
+
    if (mod(floor(difference), 2.0) == 0.0){
       if (fract(difference) < .8 && fract(difference) > .2){
          FragColor = RedToGreen;
